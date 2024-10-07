@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRoleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: UserRoleRepository::class)]
 class UserRole
@@ -17,7 +18,7 @@ class UserRole
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'role', targetEntity: User::class)]
-    private Collection $users;
+    private $users;
 
     public function __construct()
     {
