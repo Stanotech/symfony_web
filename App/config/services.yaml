@@ -19,6 +19,9 @@ services:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
             $passwordEncoder: '@security.password_encoder'
+            
+    Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface: '@security.user_password_hasher'
+
 
     # default configuration for services in *this* file
     _defaults:
