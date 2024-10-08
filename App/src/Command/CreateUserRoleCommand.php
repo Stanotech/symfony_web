@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\Question;
 
 class CreateUserRoleCommand extends Command
 {
-    protected static $defaultName = 'app:create-user-role';
+    protected static $defaultName = 'app:user:create-role';
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -25,7 +25,7 @@ class CreateUserRoleCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('app:create-user-role')
+            ->setName('app:user:create-role')
             ->setDescription('Creates a new user role.')
             ->setHelp('This command allows you to create a user role...');
     }
