@@ -32,7 +32,9 @@ class CreateUserCommand extends Command
             ->setDescription('Creates a new user')
             ->addArgument('email', InputArgument::REQUIRED, 'The email of the user')
             ->addArgument('password', InputArgument::REQUIRED, 'The password of the user')
-            ->addArgument('role', InputArgument::REQUIRED, 'The role of the user (admin, user, etc.)');
+            ->addArgument('role', InputArgument::REQUIRED, 'The role of the user (admin, user, etc.)')
+            ->addArgument('first_name', InputArgument::REQUIRED, 'The first name of the user')
+            ->addArgument('last_name', InputArgument::REQUIRED, 'The last name of the user');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -40,6 +42,8 @@ class CreateUserCommand extends Command
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
         $roleName = $input->getArgument('role');
+        $firstName = $input->getArgument('first_name');
+        $lastName = $input->getArgument('last_name');
     
         $userRole = $this->entityManager->getRepository(UserRole::class)->findOneBy(['name' => $roleName]);
     
@@ -52,6 +56,8 @@ class CreateUserCommand extends Command
         $user->setEmail($email);
         $user->setPassword($this->passwordHasher->hashPassword($user, $password));
         $user->setRole($userRole);
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
     
         $this->entityManager->persist($user);
         $this->entityManager->flush();
