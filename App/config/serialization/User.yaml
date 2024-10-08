@@ -1,0 +1,7 @@
+App\Entity\User:
+    attributes:
+        id: ~
+        email: ~
+        firstName: ~
+        lastName: ~
+        role: ~
