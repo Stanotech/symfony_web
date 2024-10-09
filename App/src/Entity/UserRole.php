@@ -43,8 +43,18 @@ class UserRole
         return $this;
     }
 
-    public function getUsers(): Collection
+    public function getUsers(): ArrayCollection
     {
         return $this->users;
     }
+
+    public function addUser(User $user): void
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setRole($this);
+        }
+    }
+
+    
 }

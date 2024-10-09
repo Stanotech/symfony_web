@@ -57,7 +57,24 @@ class UserRoleController extends AbstractController
      */
     public function create(Request $request): JsonResponse
     {
-        // Implement role creation logic here
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['name'])) {
+            return $this->json(['error' => 'Missing required field'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $role = $this->entityManager->getRepository(UserRole::class)->findOneBy(['name' => $data['name']]);
+        if ($role) {
+            return $this->json(['error' => 'Role already exists'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        // Create new user and set required data
+        $role = new UserRole();
+        $role->setName($data['name']);
+
+        $this->entityManager->persist($role);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'Role created'], 201);
     }
 
@@ -66,7 +83,26 @@ class UserRoleController extends AbstractController
      */
     public function update(int $id, Request $request): JsonResponse
     {
-        // Implement role update logic here
+        $role = $this->entityManager->getRepository(UserRole::class)->find($id);
+        if (!$role) {
+            return $this->json(['message' => 'Role not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        if (!isset($data['name'])) {
+            return $this->json(['error' => 'Missing required field'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $role->setName($data['name']);
+
+        $users = $role->getUsers();
+        foreach ($users as $user) {
+            $role->removeUser($user);
+        }
+
+        $this->entityManager->persist($role);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'Role updated']);
     }
 
@@ -75,7 +111,19 @@ class UserRoleController extends AbstractController
      */
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
-        // Implement partial update logic here
+        $data = json_decode($request->getContent(), true);
+        $role = $this->entityManager->getRepository(UserRole::class)->find($id);
+        if (!$role) {
+            return $this->json(['message' => 'Role not found'], 404);
+        }
+
+        if (isset($data['name'])) {
+            $role->setName($data['name']);
+        }
+
+        $this->entityManager->persist($role);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'Role partially updated']);
     }
 
@@ -84,7 +132,14 @@ class UserRoleController extends AbstractController
      */
     public function delete(int $id): JsonResponse
     {
-        // Implement role deletion logic here
+        $role = $this->entityManager->getRepository(UserRole::class)->find($id);
+        if (!$role) {
+            return $this->json(['message' => 'Role not found'], 404);
+        }
+        
+        $this->entityManager->remove($role);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'Role deleted']);
     }
 }
