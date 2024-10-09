@@ -44,7 +44,23 @@ class UserController extends AbstractController
      */
     public function create(Request $request): JsonResponse
     {
-        // Implement user creation logic here
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+        $role = $data['role'] ?? '';
+        $firstName = $data['first_name'] ?? '';
+        $lastName = $data['last_name'] ?? '';
+
+        $user = new User();
+        $user->setEmail($email);
+        $user->setPassword($password);
+        $user->setRole($role);
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'User created'], 201);
     }
 
@@ -53,7 +69,30 @@ class UserController extends AbstractController
      */
     public function update(int $id, Request $request): JsonResponse
     {
-        // Implement user update logic here
+        $data = json_decode($request->getContent(), true);
+
+        // necessary data exists ?
+        if (!isset($data['firstName']) || !isset($data['lastName']) || !isset($data['email'])) {
+            return $this->json(['error' => 'Invalid data'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        // Get user
+        $user = $this->entityManager->getRepository(User::class)->find($id);
+
+        // Check if exists
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        // update data
+        $user->setFirstName($data['firstName']);
+        $user->setLastName($data['lastName']);
+        $user->setEmail($data['email']);
+
+        // prepare and save
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'User updated']);
     }
 
