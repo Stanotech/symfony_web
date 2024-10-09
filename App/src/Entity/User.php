@@ -69,5 +69,4 @@ class User implements PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
-    // Gettery i settery
 }
