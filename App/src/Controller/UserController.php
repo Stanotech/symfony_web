@@ -144,6 +144,12 @@ class UserController extends AbstractController
      */
     public function delete(int $id): JsonResponse
     {
+        $user = $this->entityManager->getRepository(User::class)->find($id);
+        if (!$user) {
+            return $this->json(['message' => 'User not found'], 404);
+        }
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
         return $this->json(['message' => 'User deleted']);
     }
 }
