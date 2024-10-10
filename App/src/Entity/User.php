@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements PasswordAuthenticatedUserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -16,7 +19,7 @@ class User implements PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
-    
+
     #[ORM\Column(type: 'string')]
     private string $password;
 
@@ -26,13 +29,23 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $lastName;
 
-    #[ORM\ManyToOne(targetEntity: UserRole::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
-    private UserRole $role;
+    #[ORM\ManyToMany(targetEntity: UserRole::class)]
+    #[ORM\JoinTable(name: 'user_roles')]
+    private $roles;
 
     public function __construct()
     {
+        $this->roles = new ArrayCollection();
+    }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
     }
 
     public function setEmail(string $email): self
@@ -59,14 +72,39 @@ class User implements PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setRole(UserRole $role): self
-    {
-        $this->role = $role;
-        return $this;
-    }
-
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles->toArray();
+    }
+
+    public function addRole(UserRole $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+        }
+        return $this;
+    }
+
+    public function removeRole(UserRole $role): self
+    {
+        $this->roles->removeElement($role);
+        return $this;
+    }
+
+    // Metoda wymagana przez UserInterface
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Wyczyść potencjalne dane, np. plain password
+        // $this->plainPassword = null;
     }
 }

@@ -77,4 +77,11 @@ class Post
     {
         return $this->createdAt;
     }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 }

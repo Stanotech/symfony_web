@@ -45,6 +45,16 @@ class PostController extends AbstractController
     public function create(Request $request): JsonResponse
     {
         // Implement post creation logic here
+        $data = json_decode($request->getContent(), true);
+        $post = new Post();
+        $post->setTitle($data['title']);
+        $post->setContent($data['body']);
+        $post->setCreatedAt(new \DateTimeImmutable());
+        $post->setAuthor($this->getUser());
+
+        $this->entityManager->persist($post);
+        $this->entityManager->flush();
+
         return $this->json(['message' => 'Post created'], 201);
     }
 
