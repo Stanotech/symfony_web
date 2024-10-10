@@ -28,10 +28,10 @@ class Post
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable(); // Ustawia datę utworzenia
+        $this->createdAt = new \DateTimeImmutable();
     }
 
-    // Gettery i settery
+    // Getters and setters
     public function getId(): ?int
     {
         return $this->id;
