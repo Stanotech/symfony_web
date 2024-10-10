@@ -59,7 +59,7 @@ class UserController extends AbstractController
         $user = new User();
         $user->setEmail($data['email']);
         $user->setPassword($data['password']);
-        $user->setRole($data['role'] ?? 'user');
+        $user->addRole($data['role'] ?? 'user');
         $user->setFirstName($data['first_name'] ?? '');
         $user->setLastName($data['last_name'] ?? '');
 
