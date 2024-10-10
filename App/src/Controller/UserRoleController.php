@@ -68,7 +68,6 @@ class UserRoleController extends AbstractController
             return $this->json(['error' => 'Role already exists'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Create new user and set required data
         $role = new UserRole();
         $role->setName($data['name']);
 
