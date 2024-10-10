@@ -22,18 +22,14 @@ class UserController extends AbstractController
         $this->passwordHasher = $passwordHasher;
     }
 
-    /**
-     * @Route("/users", methods={"GET"})
-     */
+    #[Route("/users", methods: ["GET"])]
     public function list(): JsonResponse
     {
         $users = $this->entityManager->getRepository(User::class)->findAll();
         return $this->json($users, 200, [], ['groups' => 'user:read']);
     }
 
-    /**
-     * @Route("/users/{id}", methods={"GET"})
-     */
+    #[Route("/users/{id}", methods: ["GET"])]
     public function detail(int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
@@ -43,9 +39,7 @@ class UserController extends AbstractController
         return $this->json($user, 200, [], ['groups' => 'user:read']);
     }
 
-    /**
-     * @Route("/users", methods={"POST"})
-     */
+    #[Route("/users", methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -69,9 +63,7 @@ class UserController extends AbstractController
         return $this->json(['message' => 'User created'], 201);
     }
 
-    /**
-     * @Route("/users/{id}", methods={"PUT"})
-     */
+    #[Route("/users/{id}", methods: ["PUT"])]
     public function update(int $id, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -102,9 +94,7 @@ class UserController extends AbstractController
         return $this->json(['message' => 'User completely updated']);
     }
 
-    /**
-     * @Route("/users/{id}", methods={"PATCH"})
-     */
+    #[Route("/users/{id}", methods: ["PATCH"])]
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -132,9 +122,7 @@ class UserController extends AbstractController
         return $this->json(['message' => 'User updated']);
     }
 
-    /**
-     * @Route("/users/{id}", methods={"DELETE"})
-     */
+    #[Route("/users/{id}", methods: ["DELETE"])]
     public function delete(int $id): JsonResponse
     {
         $user = $this->entityManager->getRepository(User::class)->find($id);
