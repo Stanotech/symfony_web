@@ -52,9 +52,9 @@ class UserRole
     {
         if (!$this->users->contains($user)) {
             $this->users[] = $user;
-            $user->setRole($this);
+            $user->addRole($this);
         }
     }
 
-    
+
 }
