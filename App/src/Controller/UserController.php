@@ -76,15 +76,12 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        // Validate all required fields
         if (!isset($data['email'], $data['first_name'], $data['last_name'], $data['password'])) {
             return $this->json(['error' => 'All fields are required'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Get user
         $user = $this->entityManager->getRepository(User::class)->find($id);
 
-        // Check if exists
         if (!$user) {
             return $this->json(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
         }
@@ -111,11 +108,8 @@ class UserController extends AbstractController
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
-        // Get user
         $user = $this->entityManager->getRepository(User::class)->find($id);
 
-        // Check if exists
         if (!$user) {
             return $this->json(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
         }
@@ -132,7 +126,6 @@ class UserController extends AbstractController
             $user->setLastName($data['last_name']);
         }
 
-        // prepare and save
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 

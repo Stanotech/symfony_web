@@ -25,7 +25,7 @@ class UserRole
         $this->users = new ArrayCollection();
     }
 
-    // Gettery i settery
+    // Getters and setters
     public function getId(): ?int
     {
         return $this->id;
