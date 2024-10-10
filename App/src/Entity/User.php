@@ -96,7 +96,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    // Metoda wymagana przez UserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
@@ -104,7 +103,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function eraseCredentials(): void
     {
-        // Wyczyść potencjalne dane, np. plain password
-        // $this->plainPassword = null;
+        // erase credentials like password
     }
 }
