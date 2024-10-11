@@ -36,9 +36,11 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private string $lastName;
 
     #[Groups('user:admin')]
-    #[ORM\ManyToMany(targetEntity: UserRole::class)]
-    #[ORM\JoinTable(name: 'user_roles')]
+    #[ORM\ManyToMany(targetEntity: UserRole::class, inversedBy: 'users')]
     private $roles;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Post::class)]
+    private $posts;
 
     public function __construct()
     {
