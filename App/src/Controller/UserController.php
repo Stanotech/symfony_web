@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use App\Entity\UserRole;
 
 class UserController extends AbstractController
 {
@@ -44,16 +44,26 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        // Check if all required fields are provided
+        dump($data);
+
         if (!isset($data['email']) || !isset($data['password']) || !isset($data['role']) || !isset($data['first_name']) || !isset($data['last_name'])) {
             return $this->json(['error' => 'Missing required fields'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        // Create new user and set required data
         $user = new User();
         $user->setEmail($data['email']);
         $user->setPassword($data['password']);
-        $user->addRole($data['role'] ?? 'user');
+
+        dump($data['role']);
+        $role = $this->entityManager->getRepository(UserRole::class)->findOneBy(['name' => $data['role']]);
+    
+        dump($role);
+        if ($role) {
+            $user->addRole($role);
+        } else {
+            return $this->json(['error' => 'Role not found'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
         $user->setFirstName($data['first_name'] ?? '');
         $user->setLastName($data['last_name'] ?? '');
 
