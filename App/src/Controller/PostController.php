@@ -18,18 +18,14 @@ class PostController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @Route("/posts", methods={"GET"})
-     */
+    #[Route("/posts", methods: ["GET"])]
     public function list(): JsonResponse
     {
         $posts = $this->entityManager->getRepository(Post::class)->findAll();
         return $this->json($posts, 200, [], ['groups' => 'post:read']);
     }
 
-    /**
-     * @Route("/posts/{id}", methods={"GET"})
-     */
+    #[Route("/posts/{id}", methods: ["GET"])]
     public function detail(int $id): JsonResponse
     {
         $post = $this->entityManager->getRepository(Post::class)->find($id);
@@ -39,12 +35,9 @@ class PostController extends AbstractController
         return $this->json($post, 200, [], ['groups' => 'post:read']);
     }
 
-    /**
-     * @Route("/posts", methods={"POST"})
-     */
+    #[Route("/posts", methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
-        // Implement post creation logic here
         $data = json_decode($request->getContent(), true);
         $post = new Post();
         $post->setTitle($data['title']);
@@ -58,30 +51,21 @@ class PostController extends AbstractController
         return $this->json(['message' => 'Post created'], 201);
     }
 
-    /**
-     * @Route("/posts/{id}", methods={"PUT"})
-     */
+    #[Route("/posts/{id}", methods: ["PUT"])]
     public function update(int $id, Request $request): JsonResponse
     {
-        // Implement post update logic here
         return $this->json(['message' => 'Post updated']);
     }
 
-    /**
-     * @Route("/posts/{id}", methods={"PATCH"})
-     */
+    #[Route("/posts/{id}", methods: ["PATCH"])]
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
-        // Implement partial update logic here
         return $this->json(['message' => 'Post partially updated']);
     }
 
-    /**
-     * @Route("/posts/{id}", methods={"DELETE"})
-     */
+    #[Route("/posts/{id}", methods: ["DELETE"])]
     public function delete(int $id): JsonResponse
     {
-        // Implement post deletion logic here
         return $this->json(['message' => 'Post deleted']);
     }
 }
