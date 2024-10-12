@@ -96,6 +96,12 @@ class PostController extends AbstractController
     #[Route("/posts/{id}", methods: ["DELETE"])]
     public function delete(int $id): JsonResponse
     {
+        $post = $this->entityManager->getRepository(Post::class)->find($id);
+        if (!$post) {
+            return $this->json(['message' => 'Post not found'], 404);
+        }
+        $this->entityManager->remove($post);
+        $this->entityManager->flush();
         return $this->json(['message' => 'Post deleted']);
     }
 }
