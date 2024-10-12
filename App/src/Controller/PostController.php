@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
 
 class PostController extends AbstractController
 {
@@ -43,7 +44,8 @@ class PostController extends AbstractController
         $post->setTitle($data['title']);
         $post->setContent($data['body']);
         $post->setCreatedAt(new \DateTimeImmutable());
-        $post->setAuthor($this->getUser());
+        $user = $this->entityManager->getRepository(User::class)->find(2);
+        $post->setAuthor($user);
 
         $this->entityManager->persist($post);
         $this->entityManager->flush();
