@@ -43,9 +43,8 @@ class PostController extends AbstractController
         $post = new Post();
         $post->setTitle($data['title']);
         $post->setContent($data['body']);
-        $post->setCreatedAt(new \DateTimeImmutable());
-        $user = $this->entityManager->getRepository(User::class)->find(2);
-        $post->setAuthor($user);
+        $post->setCreatedAt(new \DateTime());
+        $post->setAuthor($this->getUser());
 
         $this->entityManager->persist($post);
         $this->entityManager->flush();
