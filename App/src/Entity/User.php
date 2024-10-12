@@ -122,6 +122,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function eraseCredentials(): void
     {
-        // erase credentials like password
+        $this->email = null;
+        $this->password = "";
+        $this->firstName = "";
+        $this->lastName = "";
+        $this->roles = new ArrayCollection();
     }
 }

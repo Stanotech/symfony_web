@@ -44,20 +44,17 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        dump($data);
-
         if (!isset($data['email']) || !isset($data['password']) || !isset($data['role']) || !isset($data['first_name']) || !isset($data['last_name'])) {
             return $this->json(['error' => 'Missing required fields'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
         $user = new User();
         $user->setEmail($data['email']);
-        $user->setPassword($data['password']);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
+        $user->setPassword($hashedPassword);
 
-        dump($data['role']);
         $role = $this->entityManager->getRepository(UserRole::class)->findOneBy(['name' => $data['role']]);
     
-        dump($role);
         if ($role) {
             $user->addRole($role);
         } else {
@@ -78,7 +75,7 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['email'], $data['first_name'], $data['last_name'], $data['password'])) {
+        if (!isset($data['email'], $data['first_name'], $data['last_name'], $data['password'], $data['role'])) {
             return $this->json(['error' => 'All fields are required'], JsonResponse::HTTP_BAD_REQUEST);
         }
 
@@ -88,16 +85,17 @@ class UserController extends AbstractController
             return $this->json(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
         }
 
-        // Replace all user data
+        $role = $this->entityManager->getRepository(UserRole::class)->findOneBy(['name' => $data['role']]);
+        $user->eraseCredentials();
+
         $user->setEmail($data['email']);
         $user->setFirstName($data['first_name']);
         $user->setLastName($data['last_name']);
+        $user->addRole($role);
 
-        // Hash the password before saving
         $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
         $user->setPassword($hashedPassword);
 
-        // Save changes
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
