@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRoleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRoleRepository::class)]
 class UserRole
@@ -43,7 +44,7 @@ class UserRole
         return $this;
     }
 
-    public function getUsers(): ArrayCollection
+    public function getUsers(): Collection
     {
         return $this->users;
     }

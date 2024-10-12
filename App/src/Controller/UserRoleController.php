@@ -73,16 +73,15 @@ class UserRoleController extends AbstractController
 
     #[Route("/user_roles/{id}", methods: "PUT")]
     public function update(int $id, Request $request): JsonResponse
-    {
+    {        
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
         if (!$role) {
             return $this->json(['message' => 'Role not found'], 404);
         }
-
         $data = json_decode($request->getContent(), true);
         if (!isset($data['name'])) {
             return $this->json(['error' => 'Missing required field'], JsonResponse::HTTP_BAD_REQUEST);
-        }
+        }        
 
         $role->setName($data['name']);
 
@@ -100,15 +99,16 @@ class UserRoleController extends AbstractController
     #[Route("/user_roles/{id}", methods: "PATCH")]
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
         if (!$role) {
             return $this->json(['message' => 'Role not found'], 404);
         }
+        $data = json_decode($request->getContent(), true);
+        if (!isset($data['name'])) {
+            return $this->json(['error' => 'Missing required field'], JsonResponse::HTTP_BAD_REQUEST);
+        }        
 
-        if (isset($data['name'])) {
-            $role->setName($data['name']);
-        }
+        $role->setName($data['name']);
 
         $this->entityManager->persist($role);
         $this->entityManager->flush();
