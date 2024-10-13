@@ -13,7 +13,42 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    // Możesz dodać niestandardowe metody zapytań tutaj, jeśli potrzebujesz
+    public function searchAndSort(?string $searchTerm, ?string $sortField, ?string $sortOrder)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->leftJoin('p.author', 'a') 
+            ->addSelect('a');
+
+        if ($searchTerm) { 
+            $qb->andWhere('p.title LIKE :searchTerm OR p.content LIKE :searchTerm OR a.firstName LIKE :searchTerm OR a.lastName LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+
+        if ($sortField) {
+            $sortOrder = $sortOrder === 'DESC' ? 'DESC' : 'ASC';
+            
+
+            switch ($sortField) {
+                case 'title':
+                    $qb->orderBy('p.title', $sortOrder);
+                    break;
+                case 'createdAt':
+                    $qb->orderBy('p.createdAt', $sortOrder);
+                    break;
+                case 'authorFirstName':
+                    $qb->orderBy('a.firstName', $sortOrder);
+                    break;
+                case 'authorLastName':
+                    $qb->orderBy('a.lastName', $sortOrder);
+                    break;
+                default:
+                    $qb->orderBy('p.createdAt', 'DESC'); 
+            }
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 
     public function findByAuthor($authorId)
     {
