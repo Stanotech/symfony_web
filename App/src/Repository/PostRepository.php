@@ -24,10 +24,8 @@ class PostRepository extends ServiceEntityRepository
                ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
 
-
         if ($sortField) {
-            $sortOrder = $sortOrder === 'DESC' ? 'DESC' : 'ASC';
-            
+            $sortOrder = $sortOrder === 'DESC' ? 'DESC' : 'ASC';            
 
             switch ($sortField) {
                 case 'title':
