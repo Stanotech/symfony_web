@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\PostRepository;
 use App\Entity\User;
 
 class PostController extends AbstractController
@@ -17,6 +18,18 @@ class PostController extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    #[Route('/posts', name: 'search_posts', methods: ['GET'])]
+    public function searchAndSort(Request $request, PostRepository $postRepository): JsonResponse
+    {
+        $searchTerm = $request->query->get('search');
+        $sortField = $request->query->get('sortField');
+        $sortOrder = $request->query->get('sortOrder');
+
+        $posts = $postRepository->searchAndSort($searchTerm, $sortField, $sortOrder);
+
+        return $this->json($posts);
     }
 
     #[Route("/posts", methods: ["GET"])]
