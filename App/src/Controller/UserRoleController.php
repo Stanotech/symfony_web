@@ -48,6 +48,18 @@ class UserRoleController extends AbstractController
         return $this->json($data);
     }
 
+    #[Route("/user_roles/{id}/users", methods: "GET")]
+    public function listUsers(int $id): JsonResponse
+    {
+        $role = $this->entityManager->getRepository(UserRole::class)->find($id);
+        if (!$role) {
+            return $this->json(['message' => 'Role not found'], 404);
+        }
+        $users = $role->getUsers();
+        return $this->json($users ?? [], 200, [], ['groups' => 'user:read']);
+    }
+
+
     #[Route("/user_roles", methods: "POST")]
     public function create(Request $request): JsonResponse
     {
