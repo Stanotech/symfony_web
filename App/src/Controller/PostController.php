@@ -20,16 +20,17 @@ class PostController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/posts', name: 'search_posts', methods: ['GET'])]
+    #[Route('/posts/search', name: 'search_posts', methods: ['GET'])]
     public function searchAndSort(Request $request, PostRepository $postRepository): JsonResponse
     {
-        $searchTerm = $request->query->get('search');
-        $sortField = $request->query->get('sortField');
-        $sortOrder = $request->query->get('sortOrder');
+        $data = json_decode($request->getContent(), true);
+        $searchTerm = $data['searchTerm'];
+        $sortField = $data['sortField'];
+        $sortOrder = $data['sortOrder'];
 
         $posts = $postRepository->searchAndSort($searchTerm, $sortField, $sortOrder);
 
-        return $this->json($posts);
+        return $this->json($posts, 200, [], ['groups' => 'post:read']);
     }
 
     #[Route("/posts", methods: ["GET"])]
