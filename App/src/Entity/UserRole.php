@@ -18,7 +18,7 @@ class UserRole
     #[ORM\Column(length: 50, unique: true)]
     private ?string $name = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles', fetch:'EXTRA_LAZY')]
     private $users;
 
     public function __construct()

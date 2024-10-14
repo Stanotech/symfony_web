@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post
@@ -13,9 +14,11 @@ class Post
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups('post:read')]
     #[ORM\Column(type: 'string', length: 255)]
     private string $title;
 
+    #[Groups('post:read')]
     #[ORM\Column(type: 'text')]
     private string $content;
 
