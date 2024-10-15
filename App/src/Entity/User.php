@@ -120,8 +120,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->email;
     }
 
-    public function eraseCredentials(): void
-    {
+    public function eraseCredentials(): void {}
 
+    public function isAdmin(): bool
+    {
+        foreach ($this->roles as $role) {
+            if ($role->getName() === 'ROLE_ADMIN') {
+                return true;
+            }
+        }
+        return false;
     }
 }

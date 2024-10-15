@@ -20,7 +20,7 @@ class PostController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/posts/search', name: 'search_posts', methods: ['GET'])]
+    #[Route("/api/posts/search", name: "search_posts", methods: ["GET"])]
     public function searchAndSort(Request $request, PostRepository $postRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -33,14 +33,14 @@ class PostController extends AbstractController
         return $this->json($posts, 200, [], ['groups' => 'post:read']);
     }
 
-    #[Route("/posts", methods: ["GET"])]
+    #[Route("/api/posts", methods: ["GET"])]
     public function list(): JsonResponse
     {
         $posts = $this->entityManager->getRepository(Post::class)->findAll();
         return $this->json($posts, 200, [], ['groups' => 'post:read']);
     }
 
-    #[Route("/posts/{id}", methods: ["GET"])]
+    #[Route("/api/posts/{id}", methods: ["GET"])]
     public function detail(int $id): JsonResponse
     {
         $post = $this->entityManager->getRepository(Post::class)->find($id);
@@ -50,7 +50,7 @@ class PostController extends AbstractController
         return $this->json($post, 200, [], ['groups' => 'post:read']);
     }
 
-    #[Route("/posts", methods: ["POST"])]
+    #[Route("/api/posts", methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -66,7 +66,7 @@ class PostController extends AbstractController
         return $this->json(['message' => 'Post created'], 201);
     }
 
-    #[Route("/posts/{id}", methods: ["PUT"])]
+    #[Route("/api/posts/{id}", methods: ["PUT"])]
     public function update(int $id, Request $request): JsonResponse
     {
         $post = $this->entityManager->getRepository(Post::class)->find($id);
@@ -85,7 +85,7 @@ class PostController extends AbstractController
         return $this->json(['message' => 'Post updated']);
     }
 
-    #[Route("/posts/{id}", methods: ["PATCH"])]
+    #[Route("/api/posts/{id}", methods: ["PATCH"])]
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -93,27 +93,36 @@ class PostController extends AbstractController
         if (!$post) {
             return $this->json(['message' => 'Post not found'], 404);
         }
-        
+
+        if ($post->getAuthor() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['message' => 'Access denied'], 403);
+        }
+
         if (isset($data['title'])) {
             $post->setTitle($data['title']);
-        }   
+        }
 
         if (isset($data['body'])) {
             $post->setContent($data['body']);
         }
-        
+
         $this->entityManager->persist($post);
         $this->entityManager->flush();
         return $this->json(['message' => 'Post partially updated']);
     }
 
-    #[Route("/posts/{id}", methods: ["DELETE"])]
+    #[Route("/api/posts/{id}", methods: ["DELETE"])]
     public function delete(int $id): JsonResponse
     {
         $post = $this->entityManager->getRepository(Post::class)->find($id);
         if (!$post) {
             return $this->json(['message' => 'Post not found'], 404);
         }
+
+        if ($post->getAuthor() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['message' => 'Access denied'], 403);
+        }
+        
         $this->entityManager->remove($post);
         $this->entityManager->flush();
         return $this->json(['message' => 'Post deleted']);
