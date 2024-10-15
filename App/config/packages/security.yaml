@@ -26,8 +26,16 @@ security:
             jwt: ~
 
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        # Unlogged
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/posts, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/users, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        - { path: ^/api/user_roles, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
+        # Logged
+        - { path: ^/api/posts, roles: ROLE_USER, methods: [POST, PATCH, DELETE] }
+        - { path: ^/api/users, roles: ROLE_USER, methods: [GET, PATCH] }
+        # Admins
+        - { path: ^/, roles: ROLE_ADMIN }
 
 when@test:
     security:

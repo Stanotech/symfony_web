@@ -18,7 +18,7 @@ class UserRoleController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route("/user_roles", methods: "GET")]
+    #[Route("/api/user_roles", methods: "GET")]
     public function list(): JsonResponse
     {
         $roles = $this->entityManager->getRepository(UserRole::class)->findAll();
@@ -33,7 +33,7 @@ class UserRoleController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route("/user_roles/{id}", methods: "GET")]
+    #[Route("/api/user_roles/{id}", methods: "GET")]
     public function detail(int $id): JsonResponse
     {
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
@@ -48,7 +48,7 @@ class UserRoleController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route("/user_roles/{id}/users", methods: "GET")]
+    #[Route("/api/user_roles/{id}/users", methods: "GET")]
     public function listUsers(int $id): JsonResponse
     {
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
@@ -60,7 +60,7 @@ class UserRoleController extends AbstractController
     }
 
 
-    #[Route("/user_roles", methods: "POST")]
+    #[Route("/api/user_roles", methods: "POST")]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -83,7 +83,7 @@ class UserRoleController extends AbstractController
         return $this->json(['message' => 'Role created'], 201);
     }
 
-    #[Route("/user_roles/{id}", methods: "PUT")]
+    #[Route("/api/user_roles/{id}", methods: "PUT")]
     public function update(int $id, Request $request): JsonResponse
     {        
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
@@ -108,7 +108,7 @@ class UserRoleController extends AbstractController
         return $this->json(['message' => 'Role updated']);
     }
 
-    #[Route("/user_roles/{id}", methods: "PATCH")]
+    #[Route("/api/user_roles/{id}", methods: "PATCH")]
     public function partialUpdate(int $id, Request $request): JsonResponse
     {
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
@@ -128,7 +128,7 @@ class UserRoleController extends AbstractController
         return $this->json(['message' => 'Role partially updated']);
     }
 
-    #[Route("/user_roles/{id}", methods: "DELETE")]
+    #[Route("/api/user_roles/{id}", methods: "DELETE")]
     public function delete(int $id): JsonResponse
     {
         $role = $this->entityManager->getRepository(UserRole::class)->find($id);
