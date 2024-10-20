@@ -1,0 +1,12 @@
+nelmio_cors:
+    defaults:
+        origin_regex: true
+        allow_origin: ['^https?://(localhost|127\.0\.0\.1):[0-9]+$']
+        allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With']
+        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+        expose_headers: ['Link']
+        max_age: 3600
+        hosts: ['^127\.0\.0\.1:[0-9]+$']
+    paths:
+        '^/':  # or any other route
+            allow_origin: ['^https?://(localhost|127\.0\.0\.1):[0-9]+$', '^http?://(localhost|127\.0\.0\.1):[0-9]+$']
