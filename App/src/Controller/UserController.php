@@ -39,7 +39,7 @@ class UserController extends AbstractController
         return $this->json($user, 200, [], ['groups' => 'user:read']);
     }
 
-    #[Route("/api/users", name: 'api_users_post', methods: ["POST"])]
+    #[Route("/api/users", name: 'app_users_post', methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
