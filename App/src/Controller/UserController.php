@@ -22,19 +22,6 @@ class UserController extends AbstractController
         $this->passwordHasher = $passwordHasher;
     }
 
-    #[Route("/api/login", methods: ["POST"])]
-    public function login(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        $email = $data['email'] ?? null;
-        $password = $data['password'] ?? null;
-
-        if (null === $email || null === $password) {
-            throw new InvalidArgumentException('Email and password must not be null');
-        }
-
-        return $this->json(['message' => 'Login successful']);
-    }
 
     #[Route("/api/users", methods: ["GET"])]
     public function list(): JsonResponse
